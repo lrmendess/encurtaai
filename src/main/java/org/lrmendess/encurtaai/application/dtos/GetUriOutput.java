@@ -15,10 +15,10 @@ public class GetUriOutput {
     
     private String shortPath;
 
-    private boolean deleted;
-
     private ZonedDateTime createdAt;
-
+    
     private ZonedDateTime updatedAt;
+    
+    private boolean deleted;
     
 }

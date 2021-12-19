@@ -30,12 +30,11 @@ public class Uri {
     
     private String shortPath;
 
-    private boolean deleted;
-
     @CreationTimestamp
     private ZonedDateTime createdAt;
 
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
+    private boolean deleted;
 }
