@@ -8,10 +8,12 @@ import org.lrmendess.encurtaai.application.dtos.CreateUriOutput;
 import org.lrmendess.encurtaai.application.dtos.GetUriOutput;
 import org.lrmendess.encurtaai.application.dtos.GetUriQrCodeInput;
 import org.lrmendess.encurtaai.application.interfaces.CreateUri;
+import org.lrmendess.encurtaai.application.interfaces.DeleteUri;
 import org.lrmendess.encurtaai.application.interfaces.GetUri;
 import org.lrmendess.encurtaai.application.interfaces.GetUriQrCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,9 @@ public class UrisController {
 
     @Autowired
     private GetUriQrCode getUriQrCode;
+
+    @Autowired
+    private DeleteUri deleteUri;
 
     @PostMapping
     public ResponseEntity<CreateUriOutput> createUri(@RequestBody @Valid CreateUriInput input) {
@@ -75,6 +80,12 @@ public class UrisController {
         }
 
         return ResponseEntity.ok(qrCode);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteUri(@PathVariable long id) {
+        deleteUri.handle(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
