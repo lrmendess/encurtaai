@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### SSL Certs ##
+**/*.p12
+**/*.jks

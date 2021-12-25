@@ -32,12 +32,12 @@ public class ApiKeyAuthenticationConfig extends WebSecurityConfigurerAdapter  {
             public Authentication authenticate(Authentication authentication) throws AuthenticationException {
                 String principal = (String) authentication.getPrincipal();
 
-                if (!principalRequestValue.equals(principal))
-                {
+                if (!principalRequestValue.equals(principal)) {
                     throw new BadCredentialsException("Api key was not found or is incorrect");
                 }
 
                 authentication.setAuthenticated(true);
+                
                 return authentication;
             }
 
@@ -47,9 +47,9 @@ public class ApiKeyAuthenticationConfig extends WebSecurityConfigurerAdapter  {
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
+            .requiresChannel().anyRequest().requiresSecure()
+            .and()
             .addFilter(filter).authorizeRequests().anyRequest().authenticated();
-            // .and()
-            // .requiresChannel().anyRequest().requiresSecure();
     }
 
 }
