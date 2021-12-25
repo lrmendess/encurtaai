@@ -1,6 +1,8 @@
 package org.lrmendess.encurtaai.webapi.controllers;
 
 import java.net.URI;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.lrmendess.encurtaai.application.dtos.CreateUriInput;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("api/uris")
+@RequestMapping("/api/uris")
 public class UrisController {
 
     @Autowired
@@ -39,15 +41,14 @@ public class UrisController {
     private DeleteUri deleteUri;
 
     @PostMapping
-    public ResponseEntity<CreateUriOutput> createUri(@RequestBody @Valid CreateUriInput input) {
+    public ResponseEntity<CreateUriOutput> createUri(@RequestBody @Valid CreateUriInput input, HttpServletRequest req) {
         CreateUriOutput output = createUri.handle(input);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(output.getId())
+        URI getUriEndpoint = ServletUriComponentsBuilder.fromRequest(req)
+            .path("/{id}").buildAndExpand(output.getId())
             .toUri();
-
-        return ResponseEntity.created(location).body(output);
+        
+        return ResponseEntity.created(getUriEndpoint).body(output);
     }
 
     @GetMapping("{id}")
@@ -62,16 +63,12 @@ public class UrisController {
     }
 
     @GetMapping("{id}/qrcode")
-    public ResponseEntity<String> getUriQrCode(@PathVariable long id) {
-        // Retrieve api base url
-        String location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .replacePath(null)
-            .build()
+    public ResponseEntity<String> getUriQrCode(@PathVariable long id, HttpServletRequest req) {
+        String baseUri = ServletUriComponentsBuilder.fromRequest(req)
+            .replacePath(null).build()
             .toString();
-
-        GetUriQrCodeInput getUriQrCodeInput = new GetUriQrCodeInput();
-        getUriQrCodeInput.setId(id);
-        getUriQrCodeInput.setBaseUri(location);
+        
+        GetUriQrCodeInput getUriQrCodeInput = new GetUriQrCodeInput(id, baseUri);
         
         String qrCode = getUriQrCode.handle(getUriQrCodeInput);
 

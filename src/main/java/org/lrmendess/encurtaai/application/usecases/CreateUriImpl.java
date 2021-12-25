@@ -10,6 +10,8 @@ import org.lrmendess.encurtaai.application.utils.Base62Converter;
 import org.lrmendess.encurtaai.application.interfaces.CreateUri;
 import org.lrmendess.encurtaai.domain.entities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +25,11 @@ public class CreateUriImpl implements CreateUri {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "Uri", key = "#result.id"),
+        @CacheEvict(cacheNames = "UriQrCode", key = "#result.id"),
+        @CacheEvict(cacheNames = "RedirectUri", key = "#result.shortPath")
+    })
     public CreateUriOutput handle(CreateUriInput input) {
         Uri uri = createUriMapper.mapToEntity(input);
 

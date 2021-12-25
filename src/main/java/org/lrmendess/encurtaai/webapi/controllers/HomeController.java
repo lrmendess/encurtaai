@@ -1,12 +1,11 @@
 package org.lrmendess.encurtaai.webapi.controllers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.lrmendess.encurtaai.application.interfaces.GetOriginalUriByShortPath;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,16 +19,14 @@ public class HomeController {
     private GetOriginalUriByShortPath getOriginalUriByShortPath;
 
     @GetMapping("{shortPath}")
-    public ResponseEntity<Void> redirect(@PathVariable String shortPath) throws URISyntaxException {
+    public void redirect(@PathVariable String shortPath, HttpServletResponse response) throws IOException {
         String originalUri = getOriginalUriByShortPath.handle(shortPath);
 
         if (originalUri == null) {
-            return ResponseEntity.notFound().build();
+            response.setStatus(404);
+        } else {
+            response.sendRedirect(originalUri);
         }
-
-        URI uri = new URI(originalUri);
-
-        return ResponseEntity.status(HttpStatus.FOUND).location(uri).build();
     }
 
 }
