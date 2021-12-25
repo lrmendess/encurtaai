@@ -8,6 +8,7 @@ import org.lrmendess.encurtaai.application.mappers.GetUriMapper;
 import org.lrmendess.encurtaai.application.interfaces.GetUri;
 import org.lrmendess.encurtaai.domain.entities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +21,7 @@ public class GetUriImpl implements GetUri {
     private GetUriMapper getUriMapper;
 
     @Override
+    @Cacheable(cacheNames = "Uri", key = "#id")
     public GetUriOutput handle(Long id) {
         Optional<Uri> uri = uriRepository.findById(id);
         

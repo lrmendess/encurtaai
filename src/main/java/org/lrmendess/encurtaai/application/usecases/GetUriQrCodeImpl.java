@@ -8,6 +8,7 @@ import org.lrmendess.encurtaai.application.interfaces.UriRepository;
 import org.lrmendess.encurtaai.application.utils.QrCodeGenerator;
 import org.lrmendess.encurtaai.domain.entities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class GetUriQrCodeImpl implements GetUriQrCode {
     private UriRepository uriRepository;
 
     @Override
+    @Cacheable(cacheNames = "UriQrCode", key = "#input.id")
     public String handle(GetUriQrCodeInput input) {
         Optional<Uri> uri = uriRepository.findById(input.getId());
 
